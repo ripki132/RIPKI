@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkTree Keren dengan Popup Gambar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .profile {
+            margin-bottom: 30px;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #9c45ff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 15px 0 5px;
+            font-weight: 600;
+        }
+
+        .bio {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .link {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .popup-img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-icon {
+            color: white;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px);
+            opacity: 0.8;
+        }
+
+        @media (max-width: 480px) {
+            .profile-img {
+                width: 100px;
+                height: 100px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .link {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile">
+            <img src="zodiak.jpg" alt="Profile" class="profile-img">
+            <h1>Jadwal Skin Zodiak</h1>
+            <p class="bio">zadwal skin zodiak, jika ada yang salah atau kurang tolong kasih tau</p>
+        </div>
+
+        <div class="links">
+            <a href="#" class="link" data-img="aurora.jpg">Januari Aurora</a>
+            <a href="#" class="link" data-img="lance.jpg">Februari Lancelot</a>
+            <a href="#" class="link" data-img="hilda.jpg">Maret Hilda</a>
+            <a href="#" class="link" data-img="mino.png">April Minotor</a>
+            <a href="#" class="link" data-img="selena.webp">Mei Selena/Karina</a>
+            <a href="#" class="link" data-img="zhask.jpg">Juni Zhask</a>
+            <a href="#" class="link" data-img="badang.jpg">Juli Badang</a>
+            <a href="#" class="link" data-img="odet.jpeg">Agustus Odet</a>
+            <a href="#" class="link" data-img="lunox.png">September Lunox</a>
+            <a href="#" class="link" data-img="hc.jpeg">Oktober Helcurt</a>
+            <a href="#" class="link" data-img="iritel.jpeg">November Iritel</a>
+            <a href="#" class="link" data-img="martis.png">Desember Martis</a>
+        </div>
+<footer>
+power by ripki </footer>
+    <div class="popup">
+        <div class="popup-content">
+            <button class="close-btn">&times;</button>
+            <img src="" alt="Popup Image" class="popup-img">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.link');
+            const popup = document.querySelector('.popup');
+            const popupImg = document.querySelector('.popup-img');
+            const closeBtn = document.querySelector('.close-btn');
+
+            // Buka popup ketika link diklik
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const imgUrl = this.getAttribute('data-img');
+                    popupImg.src = imgUrl;
+                    popup.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            // Tutup popup
+            closeBtn.addEventListener('click', function() {
+                popup.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Tutup popup ketika klik di luar gambar
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    popup.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Tutup popup dengan tombol ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && popup.classList.contains('active')) {
+                    popup.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

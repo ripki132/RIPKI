@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Kontak dengan Background Profil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #121212;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #e0e0e0;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .link {
+            position: relative;
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #1e1e1e;
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .link:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .link:active {
+            background-color: #f5f5f5;
+            color: #333333;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 
+                        0 0 30px rgba(255, 255, 255, 0.4);
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Popup Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .portfolio-card {
+            background-color: #1e1e1e;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+            border: 1px solid #333;
+            overflow: hidden;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .portfolio-header {
+            position: relative;
+            height: 150px;
+            overflow: hidden;
+        }
+
+        .profile-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
+
+        .profile-content {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            z-index: 2;
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            margin-bottom: auto;
+        }
+
+        .portfolio-name {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .portfolio-title {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: normal;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .portfolio-body {
+            padding: 20px;
+        }
+
+        .portfolio-info {
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+        }
+
+        .info-item i {
+            margin-right: 10px;
+            color: #667eea;
+            width: 20px;
+            text-align: center;
+        }
+
+        .copy-btn {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .portfolio-footer {
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            border-top: 1px solid #333;
+        }
+
+        .social-icon {
+            color: #e0e0e0;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .social-icon:hover {
+            color: #667eea;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>NGUWAWOR</h1>
+        <div class="links-container">
+            <a href="#" class="link" id="portfolio-link">Akun Mlbb</a>
+            <a href="zodiak.html" class="link">Jadwal Skin Zodiak</a>
+            <a href="Kzodiak.html" class="link">Kalkulator Zodiak</a>
+            <a href="legend.html" class="link">Kalkulator Legends</a>
+        </div>
+    </div>
+
+    <!-- Popup Modal untuk Portofolio -->
+    <div class="modal" id="portfolio-modal">
+        <div class="portfolio-card">
+            <button class="close-btn">&times;</button>
+            <div class="portfolio-header">
+                <img src="bcml.jpg" alt="Background" class="profile-bg">
+                <div class="profile-content">
+                    <img src="ppml.jpg" alt="Profile" class="profile-img">
+                    <h2 class="portfolio-name">Hyvnnn.</h2>
+                </div>
+            </div>
+            <div class="portfolio-body">
+                <div class="portfolio-info">
+                    <div class="info-item">
+                        <i class="fas fa-gamepad"></i>
+                        <span id="wa-number">726634591 </span>
+                        <button class="copy-btn" onclick="copyToClipboard('wa-number')">
+                            <i class="fas fa-copy"></i> Salin
+                        </button>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-user"></i>
+                        <span>ripki</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>jawa barat, Indonesia</span>
+                    </div>
+                    <p style="color:white;">haii mabar yuk</p>
+                </div>
+            </div>
+            <div class="portfolio-footer">
+                <a href="https://api.whatsapp.com/send?phone=6282116359852" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://chat.whatsapp.com/JrszxpXdzh59L7iLM8Wf18" class="social-icon"><i class="fa fa-users"></i></a>
+                <a href="https://whatsapp.com/channel/0029VaiFhoz8kyyM2SsR6A0l" class="social-icon"><i class="fa fa-theater-masks"></i></a>
+                <a href="https://www.instagram.com/ripki4321?igsh=YzljYTk1ODg3Zg==" class="social-icon"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="copy-notification" id="copy-notification">
+        Id Mlbb Telah Disalin, Silahkan Folow Dan Mabar!
+    </div>
+
+    <script>
+        // Tangani klik pada link Portofolio
+        document.getElementById('portfolio-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('portfolio-modal').style.display = 'flex';
+        });
+
+        // Tangani klik tombol close
+        document.querySelector('.close-btn').addEventListener('click', function() {
+            document.getElementById('portfolio-modal').style.display = 'none';
+        });
+
+        // Tangani klik di luar modal untuk menutup
+        window.addEventListener('click', function(e) {
+            if (e.target === document.getElementById('portfolio-modal')) {
+                document.getElementById('portfolio-modal').style.display = 'none';
+            }
+        });
+
+        // Fungsi untuk menyalin nomor WA
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const notification = document.getElementById('copy-notification');
+                notification.style.display = 'block';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 2000);
+            });
+        }
+
+        // Tetap pertahankan efek klik untuk semua link
+        document.querySelectorAll('.link').forEach(link => {
+            link.addEventListener('mousedown', function() {
+                this.classList.add('click-effect');
+            });
+            
+            link.addEventListener('mouseup', function() {
+                this.classList.remove('click-effect');
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.classList.remove('click-effect');
+            });
+            
+            // Untuk link selain Portofolio, tetap redirect
+            if (link.id !== 'portfolio-link') {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.98)';
+                    
+                    setTimeout(() => {
+                        window.location.href = this.href;
+                    }, 300);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
